@@ -104,7 +104,7 @@ def evaluate(args, kg, dataset, filename):
                 break
         
         if (user_num+1) % args.observe_num == 0 and user_num > 0:
-            SR = [SR5/args.observe_num, SR10/args.observe_num, SR15/args.observe_num, AvgT / args.observe_num]
+            SR = [SR5/args.observe_num, SR10/args.observe_num, SR15/args.observe_num, AvgT / args.observe_num, Rank / args.observe_num]
             SR_TURN = [i/args.observe_num for i in SR_turn_15]
             print('Total evalueation epoch_uesr:{}'.format(user_num + 1))
             print('Takes {} seconds to finish {}% of this task'.format(str(time.time() - start),

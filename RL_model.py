@@ -301,7 +301,6 @@ def train(args, kg, dataset, filename):
                     next_state, next_cand, action_space, reward, done = env.step(action.item(), sorted_actions, agent.gcn_net.embedding.weight.data.cpu().detach().numpy())
                 else:
                     next_state, next_cand, action_space, reward, done = env.step(action.item(), sorted_actions)
-                #next_state = torch.tensor([next_state], device=args.device, dtype=torch.float)
                 epi_reward += reward
                 reward = torch.tensor([reward], device=args.device, dtype=torch.float)
                 if done:
@@ -317,7 +316,6 @@ def train(args, kg, dataset, filename):
 
                 if done:
                     # every episode update the target model to be same with model
-                    #agent.update_target_model()
                     if reward.item() == 1:  # recommend successfully
                         if t < 5:
                             SR5 += 1
@@ -340,7 +338,6 @@ def train(args, kg, dataset, filename):
                   'Total epoch_uesr:{}'.format(SR5 / args.sample_times, SR10 / args.sample_times, SR15 / args.sample_times,
                                                 AvgT / args.sample_times, Rank / args.sample_times, total_reward / args.sample_times, args.sample_times))
 
-        #if train_step % args.eval_num == 0 or (train_step < 1000 and train_step % (args.eval_num/10) == 0):
         if train_step % args.eval_num == 0:
             SR15_mean = dqn_evaluate(args, kg, dataset, agent, filename, train_step)
             test_performance.append(SR15_mean)
@@ -373,7 +370,6 @@ def main():
     parser.add_argument('--load_rl_epoch', type=int, default=0, help='the epoch of loading RL model')
 
     parser.add_argument('--sample_times', type=int, default=100, help='the epoch of sampling')
-    #parser.add_argument('--update_times', type=int, default=100, help='the epoch of updating')
     parser.add_argument('--max_steps', type=int, default=100, help='max training steps')
     parser.add_argument('--eval_num', type=int, default=10, help='the number of steps to evaluate RL model and metric')
     parser.add_argument('--save_num', type=int, default=10, help='the number of steps to save RL model and metric')

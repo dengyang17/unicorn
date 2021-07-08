@@ -23,15 +23,7 @@ def dqn_evaluate(args, kg, dataset, agent, filename, i_episode):
     set_random_seed(args.seed)
     tt = time.time()
     start = tt
-    # self.reward_dict = {
-    #     'ask_suc': 0.1,
-    #     'ask_fail': -0.1,
-    #     'rec_suc': 1,
-    #     'rec_fail': -0.3,
-    #     'until_T': -0.3,  # until MAX_Turn
-    #     'cand_none': -0.1
-    # }
-    # ealuation metric  ST@T
+    
     SR5, SR10, SR15, AvgT, Rank, total_reward = 0, 0, 0, 0, 0, 0
     SR_turn_15 = [0]* args.max_turn
     turn_result = []
@@ -57,12 +49,10 @@ def dqn_evaluate(args, kg, dataset, agent, filename, i_episode):
         # TODO uncommend this line to print the dialog process
         blockPrint()
         print('\n================test tuple:{}===================='.format(user_num))
-        #state, cand, action_space = test_env.reset()  # Reset environment and record the starting state
         if not args.fix_emb:
             state, cand, action_space = test_env.reset(agent.gcn_net.embedding.weight.data.cpu().detach().numpy())  # Reset environment and record the starting state
         else:
             state, cand, action_space = test_env.reset() 
-        #state = torch.unsqueeze(torch.FloatTensor(state), 0).to(args.device)
         epi_reward = 0
         is_last_turn = False
         for t in count():  # user  dialog
@@ -70,7 +60,6 @@ def dqn_evaluate(args, kg, dataset, agent, filename, i_episode):
                 is_last_turn = True
             action, sorted_actions = agent.select_action(state, cand, action_space, is_test=True, is_last_turn=is_last_turn)
             next_state, next_cand, action_space, reward, done = test_env.step(action.item(), sorted_actions)
-            #next_state = torch.tensor([next_state], device=args.device, dtype=torch.float)
             epi_reward += reward
             reward = torch.tensor([reward], device=args.device, dtype=torch.float)
             if done:
