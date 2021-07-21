@@ -13,6 +13,8 @@ The code is partially referred to https://cpr-conv-rec.github.io/.
 ## Training
 `python RL_model.py --data_name <data_name>`
 
+## Evaluation
+`python evaluate.py --data_name <data_name> --load_rl_epoch <checkpoint_epoch>`
 
 ## Citation
 If the code is used in your research, please star this repo and cite our paper as follows:
