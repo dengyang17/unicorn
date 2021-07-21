@@ -235,7 +235,7 @@ class BinaryRecommendEnv(object):
         user_idx = len(cur_node)
         cand_item_score = self.sigmoid(self.cand_item_score)
         for item, score in zip(self.cand_items, cand_item_score):
-            if self.data_name in ['TAOBAO','YELP_STAR']:
+            if self.data_name in ['YELP_STAR']:
                 if item not in set_cand_items:
                     continue
             i.append([user_idx, idx[item]])
