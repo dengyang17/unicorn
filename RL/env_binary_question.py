@@ -209,7 +209,7 @@ class BinaryRecommendEnv(object):
         return action_space
 
     def _get_state(self):
-        if self.data_name in ['TAOBAO','YELP_STAR']:
+        if self.data_name in ['YELP_STAR']:
             self_cand_items = self.cand_items[:5000]
             set_cand_items = set(self_cand_items)
         else:
