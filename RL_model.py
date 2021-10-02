@@ -175,6 +175,7 @@ class Agent(object):
                 return torch.tensor(action_space[1][0], device=self.device, dtype=torch.long), action_space[1]
             with torch.no_grad():
                 actions_value = self.policy_net(state_emb, cand_emb)
+                print(sorted(list(zip(cand[0].tolist(), actions_value[0].tolist())), key=lambda x: x[1], reverse=True))
                 action = cand[0][actions_value.argmax().item()]
                 sorted_actions = cand[0][actions_value.sort(1, True)[1].tolist()]
                 return action, sorted_actions.tolist()
@@ -237,10 +238,11 @@ class Agent(object):
         return loss.data
     
     def save_model(self, data_name, filename, epoch_user):
-        save_rl_agent(dataset=data_name, model=self.policy_net, filename=filename, epoch_user=epoch_user)
+        save_rl_agent(dataset=data_name, model={'policy': self.policy_net.state_dict(), 'gcn': self.gcn_net.state_dict()}, filename=filename, epoch_user=epoch_user)
     def load_model(self, data_name, filename, epoch_user):
         model_dict = load_rl_agent(dataset=data_name, filename=filename, epoch_user=epoch_user)
-        self.policy_net.load_state_dict(model_dict)
+        self.policy_net.load_state_dict(model_dict['policy'])
+        self.gcn_net.load_state_dict(model_dict['gcn'])
     
     def padding(self, cand):
         pad_size = max([len(c) for c in cand])
@@ -373,6 +375,7 @@ def main():
     parser.add_argument('--max_steps', type=int, default=100, help='max training steps')
     parser.add_argument('--eval_num', type=int, default=10, help='the number of steps to evaluate RL model and metric')
     parser.add_argument('--save_num', type=int, default=10, help='the number of steps to save RL model and metric')
+    parser.add_argument('--observe_num', type=int, default=500, help='the number of steps to print metric')
     parser.add_argument('--cand_num', type=int, default=10, help='candidate sampling number')
     parser.add_argument('--cand_item_num', type=int, default=10, help='candidate item sampling number')
     parser.add_argument('--fix_emb', action='store_false', help='fix embedding or not')
