@@ -78,7 +78,7 @@ def save_rl_agent(dataset, model, filename, epoch_user):
     model_file = TMP_DIR[dataset] + '/RL-agent/' + filename + '-epoch-{}.pkl'.format(epoch_user)
     if not os.path.isdir(TMP_DIR[dataset] + '/RL-agent/'):
         os.makedirs(TMP_DIR[dataset] + '/RL-agent/')
-    torch.save(model.state_dict(), model_file)
+    torch.save(model, model_file)
     print('RL policy model saved at {}'.format(model_file))
 
 
