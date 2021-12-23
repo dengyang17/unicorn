@@ -220,15 +220,17 @@ class BinaryRecommendEnv(object):
         reachable_feature = [x + self.user_length + self.item_length for x in self.reachable_feature]
         neighbors = cur_node + user + cand_items + reachable_feature
         
-        idx = dict(enumerate(list(self.cur_node_set) + user + list(self_cand_items) + list(self.reachable_feature)))
+        idx = dict(enumerate(neighbors))
         idx = {v: k for k, v in idx.items()}
 
         i = []
         v = []
         for item in self_cand_items:
+            item_idx = item + self.user_length
             for fea in self.item_feature_pair[item]:
-                i.append([idx[item], idx[fea]])
-                i.append([idx[fea], idx[item]])
+                fea_idx = fea + self.user_length + self.item_length
+                i.append([idx[item_idx], idx[fea_idx]])
+                i.append([idx[fea_idx], idx[item_idx]])
                 v.append(1)
                 v.append(1)
 
@@ -238,8 +240,9 @@ class BinaryRecommendEnv(object):
             if self.data_name in ['YELP_STAR']:
                 if item not in set_cand_items:
                     continue
-            i.append([user_idx, idx[item]])
-            i.append([idx[item], user_idx])
+            item_idx = item + self.user_length
+            i.append([user_idx, idx[item_idx]])
+            i.append([idx[item_idx], user_idx])
             v.append(score)
             v.append(score)
         

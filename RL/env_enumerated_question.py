@@ -232,23 +232,26 @@ class EnumeratedRecommendEnv(object):
         reachable_feature = [x + self.user_length + self.item_length for x in self.reachable_small_feature]
         neighbors = cur_node + user + cand_items + reachable_feature
         
-        idx = dict(enumerate(list(self.acc_small_fea) + user + list(self.cand_items) + list(self.reachable_small_feature)))
+        idx = dict(enumerate(neighbors))
         idx = {v: k for k, v in idx.items()}
 
         i = []
         v = []
         for item in self.item_feature_pair:
+            item_idx = item + self.user_length
             for fea in self.item_feature_pair[item]:
-                i.append([idx[item], idx[fea]])
-                i.append([idx[fea], idx[item]])
+                fea_idx = fea + self.user_length + self.item_length
+                i.append([idx[item_idx], idx[fea_idx]])
+                i.append([idx[fea_idx], idx[item_idx]])
                 v.append(1)
                 v.append(1)
 
         user_idx = len(cur_node)
         cand_item_score = self.sigmoid(self.cand_item_score)
         for item, score in zip(self.cand_items, cand_item_score):
-            i.append([user_idx, idx[item]])
-            i.append([idx[item], user_idx])
+            item_idx = item + self.user_length
+            i.append([user_idx, idx[item_idx]])
+            i.append([idx[item_idx], user_idx])
             v.append(score)
             v.append(score)
         
